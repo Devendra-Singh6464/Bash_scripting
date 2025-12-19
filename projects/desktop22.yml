@@ -1,0 +1,383 @@
+---
+- hosts: nw
+  become: yes
+  vars:
+   apt_file: /etc/apt/sources.list.d/google-chrome.list
+   ldap_script_src_path:          /home/vagrant/Script/wigub-script-by-ansible/ldap.sh
+   ldap_script_dest_path:         /home/wadmin/ldap.sh
+
+  tasks:
+
+
+    - name: update
+      apt: update_cache=yes
+    - name: Install apache2 server
+      apt: name=apache2 state=present
+
+    - name: enable rewrite module
+      shell: a2enmod rewrite
+
+    - name: php repo add
+      apt_repository: repo='ppa:ondrej/php' update_cache=yes
+
+    - name: Install php8.2, its dependencies and other needful modules
+      apt: name={{item}} state=present
+      with_items:
+       - "php8.2"
+       - "php8.2-curl"
+       - "php8.2-intl"
+       - "php8.2-common"
+       - "php8.2-gd"
+       - "php8.2-dom"
+       - "php8.2-mcrypt"
+       - "php8.2-iconv"
+       - "php8.2-xsl"
+       - "php8.2-mbstring"
+       - "php8.2-ctype"
+       - "php8.2-zip"
+       - "php8.2-pdo"
+       - "php8.2-xml"
+       - "php8.2-bz2"
+       - "php8.2-calendar"
+       - "php8.2-exif"
+       - "php8.2-fileinfo"
+       - "php8.2-mysqli"
+       - "php8.2-mysql"
+       - "php8.2-tokenizer"
+       - "php8.2-xmlwriter"
+       - "php8.2-xmlreader"
+       - "php8.2-phar"
+       - "php8.2-bcmath"
+       - "php8.2-soap"
+       - "php8.2-mysql"
+       - "php8.2-fpm"
+       - "libapache2-mod-php8.2"
+       - "php8.2-gmp"
+       - "php8.2-apcu"
+       - "php8.2-redis"
+       - "php8.2-imagick"
+       - "php8.2-imap"
+       - "php8.2-xdebug"
+
+    - name: Install php7.4, its dependencies and other needful modules
+      apt: name={{item}} state=present
+      with_items:
+       - "unzip"
+       - "wget"
+       - "php7.4"
+       - "php7.4-zip"
+       - "php7.4-mysql"
+       - "php7.4-fpm"
+       - "libapache2-mod-php7.4"
+       - "php7.4-curl"
+       - "php7.4-intl"
+       - "php7.4-gd"
+       - "php7.4-dom"
+       - "php7.4-mcrypt"
+       - "php7.4-iconv"
+       - "php7.4-xsl"
+       - "php7.4-mbstring"
+       - "php7.4-ctype"
+       - "php7.4-zip"
+       - "php7.4-pdo"
+       - "php7.4-xml"
+       - "php7.4-bz2"
+       - "php7.4-calendar"
+       - "php7.4-exif"
+       - "php7.4-fileinfo"
+       - "php7.4-json"
+       - "php7.4-mysqli"
+       - "php7.4-mysql"
+       - "php7.4-tokenizer"
+       - "php7.4-xmlwriter"
+       - "php7.4-xmlreader"
+       - "php7.4-phar"
+       - "php7.4-bcmath"
+       - "php7.4-soap"
+
+    - name: Install php8.0, its dependencies and other needful modules
+      apt: name={{item}} state=present
+      with_items:
+       - "php8.0"
+       - "php8.0-curl"
+       - "php8.0-intl"
+       - "php8.0-gd"
+       - "php8.0-dom"
+       - "php8.0-mcrypt"
+       - "php8.0-iconv"
+       - "php8.0-xsl"
+       - "php8.0-mbstring"
+       - "php8.0-ctype"
+       - "php8.0-zip"
+       - "php8.0-pdo"
+       - "php8.0-xml"
+       - "php8.0-bz2"
+       - "php8.0-calendar"
+       - "php8.0-exif"
+       - "php8.0-fileinfo"
+       - "php8.0-mysqli"
+       - "php8.0-mysql"
+       - "php8.0-tokenizer"
+       - "php8.0-xmlwriter"
+       - "php8.0-xmlreader"
+       - "php8.0-phar"
+       - "php8.0-bcmath"
+       - "php8.0-soap"
+       - "php8.0-mysql"
+       - "php8.0-fpm"
+       - "libapache2-mod-php8.0"
+       - "php8.0-gmp"
+       - "php8.0-apcu"
+       - "php8.0-redis"
+       - "php8.0-imagick"
+       - "php8.0-imap"
+       - "php8.0-xdebug"
+
+    - name: Install php8.1, its dependencies and other needful modules
+      apt: name={{item}} state=present
+      with_items:
+       - "php8.1"
+       - "php8.1-zip"
+       - "php8.1-mysql"
+       - "php8.1-fpm"
+       - "libapache2-mod-php8.1"
+       - "php8.1-curl"
+       - "php8.1-intl"
+       - "php8.1-gd"
+       - "php8.1-xsl"
+       - "php8.1-mbstring"
+       - "php8.1-ctype"
+       - "php8.1-zip"
+       - "php8.1-pdo"
+       - "php8.1-xml"
+       - "php8.1-bz2"
+       - "php8.1-exif"
+       - "php8.1-tokenizer"
+       - "php8.1-bcmath"
+       - "php8.1-soap"
+
+    - name: Update alternatives for php8.2
+      shell: sudo update-alternatives --set php /usr/bin/php8.2
+      ignore_errors: True
+    
+    - name: Pre-steps to make mysql-server gets installed without prompting for password
+      shell: export DEBIAN_FRONTEND="noninteractive" && /bin/echo "mysql-server mysql-server/root_password password webkul" | debconf-set-selections && /bin/echo "mysql-server mysql-server/root_password_again password webkul" | debconf-set-selections
+      ignore_errors: True
+    - name: Install MySQL
+      apt: name={{item}} state=present
+      become: yes
+      with_items:
+        - "libmysqlclient-dev"
+        - "python3-mysqldb"
+        - "mysql-server"
+        - "mysql-client"
+
+    - name: Start the MySQL service
+      service: name=mysql state=restarted enabled=yes
+    
+    - name: thunderbird repo add
+      apt_repository: repo='ppa:mozillateam/thunderbird-next' update_cache=yes
+
+    - name: Install Thunderbird
+      shell: apt install thunderbird -y
+
+        # - name: Add repository for shutter installation
+        #apt_repository: repo='ppa:linuxuprising/shutter' update_cache=yes
+
+    - name: Install shutter
+      apt: name=shutter state=present
+
+    - name: Install filezilla
+      apt: name=filezilla state=present
+
+        #- name: Install firefox browser
+        #apt: name=firefox state=present
+       
+    - name: chromium repo add
+      apt_repository: repo='ppa:xtradeb/apps' update_cache=yes
+
+    - name: Install curl
+      shell: apt install curl -y
+
+
+    - name: Install chromium browser
+      apt: name=chromium state=present
+      ignore_errors: True
+
+    - name: Install node/npm
+      shell: curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash - && apt-get -y install nodejs 
+      
+   
+    - name: Install vim editor
+      apt: name=vim state=present
+
+#    - name: Install phpmyadmin
+#      shell: echo "phpmyadmin phpmyadmin/internal/skip-preseed boolean true" | debconf-set-selections && echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | debconf-set-selections && echo "phpmyadmin phpmyadmin/dbconfig-install boolean false" | debconf-set-selections && apt-get -y install phpmyadmin
+      
+    - name: Block USB access
+      shell: chmod 700 /media && /bin/sed -i '/GRUB_DISABLE_RECOVERY="true"/s/^#//g' /etc/default/grub
+
+        #- name: Add kazam repository
+      #apt_repository:
+        #repo: 'ppa:sylvain-pineau/kazam'
+        #update_cache: yes
+
+    - name: Install kazam
+      shell: apt install kazam -y 
+      ignore_errors: True
+
+    - name: Install git
+      apt: name=git state=present
+      ignore_errors: True    
+
+    - name: install postman
+      copy:
+       src: /home/vagrant/Script/postman.sh
+       dest: /home/wadmin
+
+    - command: sh /home/wadmin/postman.sh
+
+    - name: PHP file size increase
+      copy:
+       src: /home/vagrant/Script/phpini.sh
+       dest: /home/wadmin
+
+    - command: sh /home/wadmin/phpini.sh
+    
+    - name: swap size increase
+      copy:
+       src: /home/vagrant/Script/swap.sh
+       dest: /home/wadmin
+
+    - command: sh /home/wadmin/swap.sh
+
+    - name: install putty-tools
+      shell: apt install putty-tools -y
+      ignore_errors: True
+
+    - name: install net-tools
+      shell: apt install net-tools -y
+      ignore_errors: True
+
+    - name: install htop
+      shell: apt install htop -y
+      ignore_errors: True
+
+ #   - name: install java
+ #     shell: apt install openjdk-8-jdk -y
+ #     ignore_errors: True
+
+    - name: Install chrome browser
+      shell: apt-get -y install libxss1 libappindicator1 libindicator7 libpango1.0-0 fonts-liberation libpangoxft-1.0-0 && /usr/bin/wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && /usr/bin/dpkg -i google-chrome*.deb
+   
+    - name: Download Nomachine
+
+      get_url:
+        url: https://download.nomachine.com/download/8.14/Linux/nomachine_8.14.2_1_amd64.deb
+        dest: /home/wadmin/nomachine_8.12.12_4_amd64.deb
+        mode: '0777'
+    - name: install nomachine     
+      apt: 
+       deb: /home/wadmin/nomachine_8.12.12_4_amd64.deb
+  
+   # - name: Install curl
+    # shell: apt install curl -y
+  
+    #- name: download atom gpg
+    #  shell: wget -q https://packagecloud.io/AtomEditor/atom/gpgkey -O- | sudo apt-key add -    
+ 
+    #- name: update in source list
+    #  shell: sudo add-apt-repository "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main"
+
+    #- name: update atom
+    #  apt: update_cache=yes
+    #  ignore_errors: True
+    #- name: install atom
+    #  apt: pkg=atom state=latest
+    #  ignore_errors: True 
+
+
+    - name: Install composer
+      shell: curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+
+    - name: download vscode gpg
+      copy:
+        src: /home/vagrant/Script/microsoft.gpg
+        dest: /etc/apt/trusted.gpg.d/
+
+    - name: update in source list
+      command: sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+    - name: update code
+      apt: update_cache=yes
+      ignore_errors: True
+    - name: install code
+      apt: pkg=code state=latest
+      ignore_errors: True 
+    - name: Remove useless packages from the cache
+      apt:
+        autoclean: yes
+      ignore_errors: True
+    - name: Remove dependencies that are no longer required
+      apt:
+        autoremove: yes
+      ignore_errors: True
+    - name: block ssh
+      shell: iptables -A INPUT -p tcp -s 127.0.0.1 --dport 22 -j ACCEPT
+
+    - name: block ssh
+      shell: iptables -A INPUT -p tcp -s 192.168.1.32 --dport 22 -j ACCEPT
+ 
+    - name: drop all ssh request
+      shell: iptables -A INPUT -p tcp --dport 22 -j DROP
+
+    - name: save file
+      shell: iptables-save
+
+    - name: copy rc.local config file
+      copy:
+       src: /home/vagrant/Script/rc.txt
+       dest: /home/wadmin/
+
+    - name: copy rc.local file
+      copy:
+       src: /home/vagrant/Script/rc2.txt
+       dest: /home/wadmin/
+
+    - name: creating rc.local file
+      copy:
+       src: /home/vagrant/Script/rclocale.sh
+       dest: /home/wadmin/
+
+    - command: sh /home/wadmin/rclocale.sh
+
+    - name: remove keyring from chrome
+      command: mv /usr/share/applications/google-chrome.desktop /home/wadmin/google-chrome.desktop.old
+
+    - name: replace desktop file
+      copy:
+       src: /home/vagrant/Script/google-chrome.desktop
+       dest: /usr/share/applications/
+
+    - name: update
+      apt: update_cache=yes
+      ignore_errors: True
+
+    - name: Copy ldap installation script
+      copy: src="{{ldap_script_src_path}}" dest="{{ldap_script_dest_path}}" mode=0755
+
+    - name: Execute ldap-client installation script
+      shell: bash "{{ldap_script_dest_path}}"
+
+    - name: meld insallation
+      shell: apt-get -y install meld
+
+    - name: update
+      apt: update_cache=yes
+      ignore_errors: True
+    #- name: Install wine server
+      #apt: name=wine state=present
+      #ignore_errors: True
+
+    - name: Webkulexam user creation passwordless
+      shell: useradd webkulexam && passwd -d webkulexam
+
